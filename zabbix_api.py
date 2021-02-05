@@ -1,31 +1,17 @@
 
-from zabbix_api_collection import BaseZabbixAPI
+from zabbix_api_collection import BaseZabbixAPI,UserLoginZabbixAPI,HostZabbixAPI
 
-class ZabbixAPI(BaseZabbixAPI):
+class ZabbixAPI():
     def __init__(self,server,user_id, password):
-        super(server,user_id,password)
+        self.server = server
+        self.user_id = user_id
+        self.password = password
         #トークン取得
-        self.token = self.get_auth_token()
-    
-    # 認証トークン取得メソッド
-    def get_auth_token(self):
-        request_json = {
-            "jsonrpc": "2.0",
-            "method": "user.login",
-            "params": {
-                "user": self.user_id,
-                "password": self.password
-            },
-            "id": 1,
-            "auth": None
-        }
+        user_login = UserLoginZabbixAPI(server)
+        self.token = user_login.get_auth_token(user_id,password)
 
-        response = self.api_call(request_json)
+        self.host = HostZabbixAPI(self.server,self.token)
 
-        return response
-
-
-    def host
 
 
 if __name__=="__main__":
@@ -33,6 +19,6 @@ if __name__=="__main__":
     file_name = "config.json"
     token = ""
 
-    tmp = BASE_ZabbixAPI(SERVER,"Admin","zabbix")
+    zabbix_api_client = ZabbixAPI(SERVER,"Admin","zabbix")
 
-    print(tmp.token)
+    print(zabbix_api_client.host.get([]))
